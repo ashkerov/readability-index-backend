@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Анализатор читабельности текста</title>
+
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<body>
+
+<header class="header">
+    <h1>Анализатор читабельности текста</h1>
+    <a href="/application">Моя заявка</a>
+</header>
+
+<main class="container">
+
+    <h2>Услуги</h2>
+
+    <div class="services">
+
+        {% for service in services %}
+
+        <article class="service-card">
+
+            <img
+                src="{{ service.image_url }}"
+                alt="{{ service.name }}"
+                class="service-image"
+            >
+
+            <h3>{{ service.name }}</h3>
+
+            <p>
+                {{ service.description }}
+            </p>
+
+            <a href="/service/{{ service.id }}">
+                Подробнее
+            </a>
+
+        </article>
+
+        {% endfor %}
+
+    </div>
+
+</main>
+
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{{ service.name }}</title>
+
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<body>
+
+<header class="header">
+    <h1>Анализатор читабельности текста</h1>
+
+    <a href="/application">
+        Моя заявка
+    </a>
+</header>
+
+
+<main class="container">
+
+    <a href="/" class="back-link">
+        ← Все услуги
+    </a>
+
+
+    <section class="service-detail">
+
+        <h2>{{ service.name }}</h2>
+
+        <p class="service-description">
+            {{ service.description }}
+        </p>
+
+
+        {% if service.formula %}
+
+        <div class="formula">
+            <h3>Обозначение</h3>
+
+            <p>
+                {{ service.formula }}
+            </p>
+        </div>
+
+        {% endif %}
+
+
+        <a
+            href="/application/new?service_id={{ service.id }}"
+            class="button"
+        >
+            Добавить в заявку
+        </a>
+
+    </section>
+
+</main>
+
+</body>
+</html>

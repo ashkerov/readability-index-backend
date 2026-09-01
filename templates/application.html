@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Моя заявка</title>
+
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<body>
+
+<header class="header">
+
+    <h1>Анализатор читабельности текста</h1>
+
+    <a href="/">
+        Все услуги
+    </a>
+
+</header>
+
+
+<main class="container">
+
+    <a href="/" class="back-link">
+        ← Все услуги
+    </a>
+
+
+    <section class="application">
+
+        <div class="application-header">
+
+            <div>
+                <h2>Заявка №{{ application.id }}</h2>
+
+                <p class="status">
+                    Статус:
+                    <strong>{{ application.status }}</strong>
+                </p>
+            </div>
+
+            <a href="/application/new" class="button">
+                Создать новую заявку
+            </a>
+
+        </div>
+
+
+        <div class="application-section">
+
+            <h3>Текст для анализа</h3>
+
+            <div class="text-preview">
+                {{ application.text }}
+            </div>
+
+        </div>
+
+
+        <div class="application-section">
+
+            <h3>Выбранные услуги</h3>
+
+            <div class="selected-services">
+
+                {% for item in application_services %}
+
+                <div class="selected-service">
+
+                    <div>
+                        <strong>{{ item.service.name }}</strong>
+
+                        <p>
+                            {{ item.service.description }}
+                        </p>
+                    </div>
+
+                    <div class="result">
+                        {% if item.result is not none %}
+                            {{ item.result }}
+                        {% else %}
+                            Не рассчитан
+                        {% endif %}
+                    </div>
+
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+
+        <div class="application-section">
+
+            <h3>Комментарий</h3>
+
+            <div class="comment">
+                {{ application.comment }}
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+</body>
+</html>

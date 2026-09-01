@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Новая заявка</title>
+
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<body>
+
+<header class="header">
+
+    <h1>Анализатор читабельности текста</h1>
+
+    <a href="/">
+        Все услуги
+    </a>
+
+</header>
+
+
+<main class="container">
+
+    <a href="/application" class="back-link">
+        ← Моя заявка
+    </a>
+
+
+    <section class="application-form">
+
+        <h2>Создание заявки</h2>
+
+        <form action="/application/create" method="post">
+
+            <div class="form-section">
+
+                <label for="text">
+                    Текст для анализа
+                </label>
+
+                <textarea
+                    id="text"
+                    name="text"
+                    rows="10"
+                    placeholder="Вставьте текст, который необходимо проанализировать..."
+                    required
+                ></textarea>
+
+            </div>
+
+
+            <div class="form-section">
+
+                <h3>Выберите услуги</h3>
+
+                {% for service in services %}
+
+                <label class="service-checkbox">
+
+                    <input
+                        type="checkbox"
+                        name="service_ids"
+                        value="{{ service.id }}"
+                        {% if service.id == selected_service_id %}
+                        checked
+                        {% endif %}
+                    >
+
+                    <span>
+                        <strong>{{ service.name }}</strong>
+
+                        <small>
+                            {{ service.description }}
+                        </small>
+                    </span>
+
+                </label>
+
+                {% endfor %}
+
+            </div>
+
+
+            <div class="form-section">
+
+                <label for="comment">
+                    Комментарий
+                </label>
+
+                <textarea
+                    id="comment"
+                    name="comment"
+                    rows="4"
+                    placeholder="Дополнительный комментарий..."
+                ></textarea>
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="button"
+            >
+                Создать заявку
+            </button>
+
+        </form>
+
+    </section>
+
+</main>
+
+</body>
+</html>
