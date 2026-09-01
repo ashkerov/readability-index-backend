@@ -8,7 +8,7 @@ services = [
     },
     {
         "id": 2,
-        "name": "Индекс тумана Ганнинга",
+        "name": "Индекс Фога",
         "description": "Оценка сложности текста и требуемого уровня образования.",
         "formula": "FOG",
         "image_url": "http://localhost:9000/readability/fog.png",

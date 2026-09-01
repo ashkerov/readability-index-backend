@@ -17,12 +17,25 @@ templates = Jinja2Templates(
 
 
 @router.get("/")
-def index(request: Request):
+def index(
+    request: Request,
+    search: str = "",
+):
+    filtered_services = services
+
+    if search:
+        filtered_services = [
+            service
+            for service in services
+            if search.lower() in service["name"].lower()
+        ]
+
     return templates.TemplateResponse(
         request=request,
         name="index.html",
         context={
-            "services": services
+            "services": filtered_services,
+            "search": search,
         }
     )
 

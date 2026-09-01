@@ -20,6 +20,19 @@
 
     <h2>Услуги</h2>
 
+    <form method="get" action="/">
+        <input
+            type="text"
+            name="search"
+            placeholder="Поиск услуги"
+            value="{{ search }}"
+        >
+
+        <button type="submit">
+            Найти
+        </button>
+    </form>
+
     <div class="services">
 
         {% for service in services %}
