@@ -1,124 +1,102 @@
-from fastapi import APIRouter, Request, Form
-from fastapi.responses import RedirectResponse
+# api/handlers.py
+from fastapi import APIRouter, Request, Query
 from fastapi.templating import Jinja2Templates
 
-from data.collections import (
-    services,
-    application,
-    application_services,
-)
-
+from data.collections import publications
 
 router = APIRouter()
+templates = Jinja2Templates(directory="templates")
 
-templates = Jinja2Templates(
-    directory="templates"
-)
+# 1. СТРАНИЦА: Плитка карточек (Список всех услуг)
+# api/handlers.py
 
-
-@router.get("/")
-def index(
+@router.get("/publications")
+def publications_grid(
     request: Request,
-    search: str = "",
+    genre: str = Query("", description="Фильтрация по жанру") 
 ):
-    filtered_services = services
+    filtered_pubs = [p for p in publications if p["status"] != "удален"]
 
-    if search:
-        filtered_services = [
-            service
-            for service in services
-            if search.lower() in service["name"].lower()
+    if genre:
+        # Теперь поиск динамичный: ищет совпадение части слова без учета регистра
+        filtered_pubs = [
+            p for p in filtered_pubs 
+            if genre.lower() in p["genre"].lower()
         ]
 
+    for p in filtered_pubs:
+        p["likes_count"] = len(p["likes"])
+
     return templates.TemplateResponse(
         request=request,
-        name="index.html",
+        name="publications_grid.html",
         context={
-            "services": filtered_services,
-            "search": search,
+            "publications": filtered_pubs,
+            "current_genre": genre,
         }
     )
 
+# 2. СТРАНИЦА: Добавление (Черновик)
+# Важно: этот роут должен быть выше /publications/{pub_id}, чтобы слово 'draft' не воспринялось как ID
+@router.get("/publications/draft")
+def publication_draft(request: Request):
+    # По ТЗ: отображается именно та услуга, которая в статусе 'черновик'
+    draft = next((p for p in publications if p["status"] == "черновик"), None)
+    
+    return templates.TemplateResponse(
+        request=request,
+        name="publication_draft.html",
+        context={
+            "publication": draft
+        }
+    )
 
-@router.get("/service/{service_id}")
-def service_detail(
+# Специальный роут для вкладки "Лента" (без указания ID)
+@router.get("/publications/feed")
+def publication_feed_general():
+    from fastapi.responses import RedirectResponse
+    # Ищем первую опубликованную запись
+    first_pub = next((p for p in publications if p["status"] == "опубликован"), None)
+    if first_pub:
+        return RedirectResponse(url=f"/publications/{first_pub['id']}", status_code=303)
+    return RedirectResponse(url="/publications", status_code=303)
+
+# 3. СТРАНИЦА: Лента (Формат TikTok по ID)
+# api/handlers.py
+
+@router.get("/publications/{pub_id}")
+def publication_feed(
     request: Request,
-    service_id: int,
+    pub_id: int,
+    next_pub: bool = Query(False, alias="next")
 ):
-    service = next(
-        (
-            service
-            for service in services
-            if service["id"] == service_id
-        ),
-        None
-    )
+    current_idx = next((i for i, p in enumerate(publications) if p["id"] == pub_id), None)
+    
+    if current_idx is None:
+        return {"error": "Публикация не найдена"}
 
-    if service is None:
-        return {"error": "Услуга не найдена"}
+    if next_pub:
+        next_idx = current_idx + 1
+        # Ищем следующую НЕ удаленную карточку
+        while next_idx < len(publications):
+            if publications[next_idx]["status"] != "удален":
+                break
+            next_idx += 1
+        
+        # Если дошли до конца списка, зацикливаем на самую первую доступную
+        if next_idx >= len(publications):
+            pub_to_show = next((p for p in publications if p["status"] != "удален"), publications[0])
+        else:
+            pub_to_show = publications[next_idx]
+    else:
+        pub_to_show = publications[current_idx]
+        
+    pub_to_show["likes_count"] = len(pub_to_show["likes"])
 
     return templates.TemplateResponse(
         request=request,
-        name="service.html",
+        name="publication_feed.html",
         context={
-            "service": service
+            "publication": pub_to_show
         }
-    )
-
-
-@router.get("/application")
-def application_page(request: Request):
-    return templates.TemplateResponse(
-        request=request,
-        name="application.html",
-        context={
-            "application": application,
-            "application_services": application_services,
-        }
-    )
-
-
-@router.get("/application/new")
-def new_application(
-    request: Request,
-    service_id: int | None = None,
-):
-    return templates.TemplateResponse(
-        request=request,
-        name="application_form.html",
-        context={
-            "services": services,
-            "selected_service_id": service_id,
-        }
-    )
-
-
-@router.post("/application/create")
-def create_application(
-    text: str = Form(...),
-    comment: str = Form(""),
-    service_ids: list[int] = Form([]),
-):
-    selected_services = []
-
-    for service in services:
-        if service["id"] in service_ids:
-            selected_services.append(
-                {
-                    "service": service,
-                    "result": None,
-                }
-            )
-
-    application["id"] += 1
-    application["text"] = text
-    application["status"] = "Новая"
-    application["comment"] = comment
-
-    application_services.clear()
-    application_services.extend(selected_services)
-
-    return RedirectResponse(
-        url="/application",
-        status_code=303,
     )

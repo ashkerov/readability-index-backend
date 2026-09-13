@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>{{ publication.title }}</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="app-container feed-container">
+        <a href="/publications" class="btn-back">←</a>
+        
+        <video class="feed-video" autoplay loop muted playsinline>
+            <source src="{{ publication.video_url }}" type="video/mp4">
+        </video>
+        
+        <!-- Нижняя часть с текстом (Слева) -->
+        <div class="feed-overlay">
+            <h2>{{ publication.title }}</h2>
+            
+            <!-- Описание с кнопкой Развернуть/Свернуть -->
+            <div class="desc-wrapper">
+                <input type="checkbox" id="desc-toggle" class="desc-toggle">
+                <p class="desc desc-text">{{ publication.description }}</p>
+                <label for="desc-toggle" class="desc-toggle-label"></label>
+            </div>
+            
+            <p style="font-size: 14px; margin-bottom: 3px;">Средняя длина: <span class="param-value">{{ publication.avg_length }}</span></p>
+            <p style="font-size: 14px;">Доля уник. слов: <span class="param-value">{{ publication.unique_words_share }}</span></p>
+        </div>
+
+        <!-- Боковое меню TikTok (Справа) -->
+        <div class="feed-sidebar">
+            <div class="sidebar-item">
+                <div class="icon">❤️</div>
+                <span class="count">{{ publication.likes_count }}</span>
+            </div>
+            
+            <a href="/publications/{{ publication.id }}?next=true" class="sidebar-item">
+                <div class="icon">⏭</div>
+                <span class="count">Далее</span>
+            </a>
+        </div>
+
+        <nav class="bottom-tab-bar">
+            <a href="/publications">Плитка</a>
+            <a href="/publications/feed" class="active">Лента</a>
+            <a href="/publications/draft">Добавление</a>
+        </nav>
+    </div>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Плитка публикаций</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <!-- Обертка мобильного режима -->
+    <div class="app-container">
+        <div class="header">
+            <h1>Тексты для оценки</h1>
+        </div>
+        
+        <div class="content">
+            <form method="GET" action="/publications" class="filter-form">
+                <input type="text" name="genre" value="{{ current_genre }}" placeholder="Жанр (например, Научный)">
+                <button type="submit">Поиск</button>
+            </form>
+
+            <div class="two-columns">
+                {% for pub in publications %}
+                <a href="/publications/{{ pub.id }}" class="card">
+                    <img src="{{ pub.image_url }}" class="image" alt="{{ pub.title }}">
+                    <div class="info">
+                        <p class="title">{{ pub.title }}</p>
+                        <div class="down">
+                            <span class="genre">{{ pub.genre }}</span>
+                            <span class="likes">❤️ {{ pub.likes_count }}</span>
+                        </div>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+            
+            {% if not publications %}
+                <p style="text-align: center; margin-top: 20px; color: #666;">Публикаций не найдено.</p>
+            {% endif %}
+        </div>
+        
+        <!-- Нижнее меню -->
+        <nav class="bottom-tab-bar">
+            <a href="/publications" {% if request.url.path == '/publications' %}class="active"{% endif %}>Плитка</a>
+            <a href="/publications/feed" {% if request.url.path == '/publications/feed' %}class="active"{% endif %} >Лента</a>
+            <a href="/publications/draft" {% if request.url.path == '/publications/draft' %}class="active"{% endif %}>Добавление</a>
+        </nav>
+    </div>
+</body>
+</html>

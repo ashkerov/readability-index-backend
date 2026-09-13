@@ -1,48 +1,52 @@
-services = [
+# data/collections.py
+
+publications = [
     {
         "id": 1,
-        "name": "Индекс Флеша",
-        "description": "Оценка лёгкости восприятия текста.",
-        "formula": "FRE",
-        "image_url": "http://localhost:9000/readability/flesh.png",
+        "title": "Отрывок из романа 'Война и мир'",
+        "genre": "Художественный",
+        "avg_length": 1500, # Средняя длина (в словах)
+        "unique_words_share": "42%", # Доля уникальных слов
+        "description": "Классическое произведение Л.Н. Толстого с длинными и сложными для восприятия предложениями.",
+        "image_url": "http://localhost:9000/readability/tolstoy.jpg",
+        "video_url": "http://localhost:9000/readability/tolstoy.mp4",
+        "status": "опубликован",
+        "likes": [101, 102, 105]
     },
     {
         "id": 2,
-        "name": "Индекс Фога",
-        "description": "Оценка сложности текста и требуемого уровня образования.",
-        "formula": "FOG",
-        "image_url": "http://localhost:9000/readability/fog.png",
+        "title": "Статья по квантовой физике",
+        "genre": "Научный",
+        "avg_length": 850,
+        "unique_words_share": "68%",
+        "description": "Сухой научный текст, изобилующий сложными физическими терминами и формулами.",
+        "image_url": "http://localhost:9000/readability/science.jpg",
+        "video_url": "http://localhost:9000/readability/science.mp4",
+        "status": "опубликован",
+        "likes": [101]
     },
     {
         "id": 3,
-        "name": "Статистика текста",
-        "description": "Количество слов, предложений, слогов и сложных слов.",
-        "formula": None,
-        "image_url": "http://localhost:9000/readability/statistics.png",
-    },
-]
-
-
-application = {
-    "id": 1,
-    "text": (
-        "Современные информационные технологии позволяют "
-        "анализировать большие объёмы текстовой информации. "
-        "Оценка читабельности помогает определить, насколько "
-        "легко пользователь может воспринимать содержание."
-    ),
-    "status": "Новая",
-    "comment": "Проверить текст статьи перед публикацией",
-}
-
-
-application_services = [
-    {
-        "service": services[0],
-        "result": None,
+        "title": "Новость о выходе смартфона",
+        "genre": "Публицистический",
+        "avg_length": 320,
+        "unique_words_share": "55%",
+        "description": "Легкая новостная заметка, написанная для широкого круга читателей.",
+        "image_url": "http://localhost:9000/readability/news.jpg",
+        "video_url": "http://localhost:9000/readability/news.mp4",
+        "status": "черновик",
+        "likes": []
     },
     {
-        "service": services[1],
-        "result": None,
-    },
+        "id": 4,
+        "title": "Инструкция к СВЧ-печи",
+        "genre": "Технический",
+        "avg_length": 150,
+        "unique_words_share": "30%",
+        "description": "Краткое и сухое описание функций бытового прибора.",
+        "image_url": "http://localhost:9000/readability/manual.jpg",
+        "video_url": "http://localhost:9000/readability/manual.mp4",
+        "status": "удален",
+        "likes": [102, 103, 109]
+    }
 ]

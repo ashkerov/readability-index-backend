@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Добавление</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <div class="header">
+            <h1>Добавление (Черновик)</h1>
+        </div>
+        
+        <div class="content">
+            {% if publication %}
+            <form class="draft-form" action="" method="GET">
+                
+                <div class="draft-section draft-media">
+                    <h3>Медиафайлы</h3>
+                    <img src="{{ publication.image_url }}" alt="Обложка">
+                    <label>URL изображения</label>
+                    <input type="text" value="{{ publication.image_url }}">
+                    
+                    <label>URL видео</label>
+                    <input type="text" value="{{ publication.video_url }}">
+                </div>
+
+                <div class="draft-section">
+                    <h3>Информация о тексте</h3>
+                    
+                    <label>Название</label>
+                    <input type="text" value="{{ publication.title }}">
+                    
+                    <label>Жанр</label>
+                    <input type="text" value="{{ publication.genre }}">
+                    
+                    <label>Средняя длина</label>
+                    <input type="number" value="{{ publication.avg_length }}">
+                    
+                    <label>Доля уникальных слов</label>
+                    <input type="text" value="{{ publication.unique_words_share }}">
+                    
+                    <label>Описание</label>
+                    <textarea>{{ publication.description }}</textarea>
+
+                    <!-- Кнопка без сохранения (по ТЗ Лаб №1) -->
+                    <button type="button" class="btn-black-rounded" style="width: 100%; margin-top: 15px;">Создать (Демо)</button>
+                </div>
+
+            </form>
+            {% else %}
+            <p style="text-align: center; margin-top: 20px;">Нет активного черновика.</p>
+            {% endif %}
+        </div>
+
+        <nav class="bottom-tab-bar">
+            <a href="/publications">Плитка</a>
+            <a href="/publications/feed">Лента</a>
+            <a href="/publications/draft" class="active">Добавление</a>
+        </nav>
+    </div>
+</body>
+</html>
