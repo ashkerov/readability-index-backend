@@ -4,6 +4,17 @@ from fastapi.staticfiles import StaticFiles # 1. Импортируем StaticFi
 import uvicorn
 
 from api.handlers import router
+from fastapi import FastAPI
+from fastapi.responses import RedirectResponse
+from fastapi.staticfiles import StaticFiles
+import uvicorn
+
+from api.handlers import router
+from data.database import engine
+from data import models
+
+# Создаем таблицы в БД при запуске
+models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Readability Index App")
 

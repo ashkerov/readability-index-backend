@@ -226,3 +226,24 @@ body {
 }
 .draft-form input:focus, .draft-form textarea:focus { border-color: #005df9; }
 .draft-form textarea { resize: vertical; min-height: 80px; }
+
+/* --- КНОПКА ПОИСКА С ЛУПОЙ --- */
+.filter-form .btn-search {
+    background: #005df9;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 18px;
+    transition: background 0.2s, transform 0.1s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.filter-form .btn-search:hover {
+    background: #0046c7;
+}
+.filter-form .btn-search:active {
+    transform: scale(0.95);
+}

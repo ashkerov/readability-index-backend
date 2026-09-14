@@ -13,44 +13,51 @@
         </div>
         
         <div class="content">
-            {% if publication %}
-            <form class="draft-form" action="" method="GET">
+            <!-- ФОРМА С МЕТОДОМ POST -->
+            <form class="draft-form" action="/publications/draft" method="POST">
                 
                 <div class="draft-section draft-media">
                     <h3>Медиафайлы</h3>
-                    <img src="{{ publication.image_url }}" alt="Обложка">
+                    <!-- По ТЗ: новые фото в этой лабе не сохраняются как файлы, используем URL -->
+                    <img src="{{ publication.image_url if publication else 'http://localhost:9000/readability/news.jpg' }}" alt="Обложка">
+                    
                     <label>URL изображения</label>
-                    <input type="text" value="{{ publication.image_url }}">
+                    <input type="text" name="image_url" value="{{ publication.image_url if publication else '' }}">
                     
                     <label>URL видео</label>
-                    <input type="text" value="{{ publication.video_url }}">
+                    <input type="text" name="video_url" value="{{ publication.video_url if publication else '' }}">
                 </div>
 
                 <div class="draft-section">
                     <h3>Информация о тексте</h3>
                     
+                    <!-- ОБЯЗАТЕЛЬНО: атрибуты name для каждого поля -->
                     <label>Название</label>
-                    <input type="text" value="{{ publication.title }}">
+                    <input type="text" name="title" value="{{ publication.title if publication else '' }}">
                     
                     <label>Жанр</label>
-                    <input type="text" value="{{ publication.genre }}">
+                    <input type="text" name="genre" value="{{ publication.genre if publication else '' }}">
                     
                     <label>Средняя длина</label>
-                    <input type="number" value="{{ publication.avg_length }}">
+                    <input type="number" name="avg_length" value="{{ publication.avg_length if publication else 0 }}">
                     
                     <label>Доля уникальных слов</label>
-                    <input type="text" value="{{ publication.unique_words_share }}">
+                    <input type="text" name="unique_words_share" value="{{ publication.unique_words_share if publication else '' }}">
                     
                     <label>Описание</label>
-                    <textarea>{{ publication.description }}</textarea>
+                    <textarea name="description">{{ publication.description if publication else '' }}</textarea>
 
-                    <!-- Кнопка без сохранения (по ТЗ Лаб №1) -->
-                    <button type="button" class="btn-black-rounded" style="width: 100%; margin-top: 15px;">Создать (Демо)</button>
+                    <div style="display: flex; gap: 10px; margin-top: 15px;">
+                        <button type="submit" class="btn-black-rounded" style="flex: 1;">Сохранить</button>
+                    </div>
                 </div>
-
             </form>
-            {% else %}
-            <p style="text-align: center; margin-top: 20px;">Нет активного черновика.</p>
+
+            <!-- КНОПКА ОПУБЛИКОВАТЬ (Отдельная форма) -->
+            {% if publication %}
+            <form action="/publications/{{ publication.id }}/publish" method="POST" style="margin-top: 10px;">
+                <button type="submit" class="btn-black-rounded" style="width: 100%; background: #005df9;">Опубликовать</button>
+            </form>
             {% endif %}
         </div>
 

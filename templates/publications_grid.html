@@ -16,7 +16,7 @@
         <div class="content">
             <form method="GET" action="/publications" class="filter-form">
                 <input type="text" name="genre" value="{{ current_genre }}" placeholder="Жанр (например, Научный)">
-                <button type="submit">Поиск</button>
+                <button type="submit" class="btn-search">🔍</button>
             </form>
 
             <div class="two-columns">
@@ -29,6 +29,10 @@
                             <span class="genre">{{ pub.genre }}</span>
                             <span class="likes">❤️ {{ pub.likes_count }}</span>
                         </div>
+                        <!-- ДОБАВЛЕНО: Кнопка удаления (POST запрос на удаление) -->
+                        <form action="/publications/{{ pub.id }}/delete" method="POST" style="margin-top: 10px;">
+                            <button type="submit" style="width: 100%; padding: 6px; background: #ffe6e6; color: #d90429; border: 1px solid #ffb3b3; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: bold;">Удалить услугу</button>
+                        </form>
                     </div>
                 </a>
                 {% endfor %}
