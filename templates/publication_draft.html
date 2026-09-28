@@ -8,64 +8,103 @@
 </head>
 <body>
     <div class="app-container">
-        <div class="header">
-            <h1>Добавление (Черновик)</h1>
+        
+        <div class="header" style="text-align: center; margin-bottom: 20px;">
+            <h1 style="margin-bottom: 5px; color: #005df9;">Новый текст</h1>
+            {% if not publication %}
+                <p style="color: #666; margin-top: 0; font-size: 14px;">Шаг 1: медиа материалы</p>
+            {% else %}
+                <p style="color: #666; margin-top: 0; font-size: 14px;">Шаг 2: параметры текста</p>
+            {% endif %}
         </div>
         
-        <div class="content">
-            <!-- ФОРМА С МЕТОДОМ POST -->
-            <form class="draft-form" action="/publications/draft" method="POST">
-                
-                <div class="draft-section draft-media">
-                    <h3>Медиафайлы</h3>
-                    <!-- По ТЗ: новые фото в этой лабе не сохраняются как файлы, используем URL -->
-                    <img src="{{ publication.image_url if publication else 'http://localhost:9000/readability/news.jpg' }}" alt="Обложка">
+        <div class="content" style="padding: 0 15px 80px 15px;">
+            {% if not publication %}
+                <!-- ШАГ 1: ЗАГРУЗКА МЕДИА -->
+                <form action="/publications/draft" method="POST" enctype="multipart/form-data" style="display: flex; flex-direction: column; gap: 15px;">
                     
-                    <label>URL изображения</label>
-                    <input type="text" name="image_url" value="{{ publication.image_url if publication else '' }}">
-                    
-                    <label>URL видео</label>
-                    <input type="text" name="video_url" value="{{ publication.video_url if publication else '' }}">
-                </div>
-
-                <div class="draft-section">
-                    <h3>Информация о тексте</h3>
-                    
-                    <!-- ОБЯЗАТЕЛЬНО: атрибуты name для каждого поля -->
-                    <label>Название</label>
-                    <input type="text" name="title" value="{{ publication.title if publication else '' }}">
-                    
-                    <label>Жанр</label>
-                    <input type="text" name="genre" value="{{ publication.genre if publication else '' }}">
-                    
-                    <label>Средняя длина</label>
-                    <input type="number" name="avg_length" value="{{ publication.avg_length if publication else 0 }}">
-                    
-                    <label>Доля уникальных слов</label>
-                    <input type="text" name="unique_words_share" value="{{ publication.unique_words_share if publication else '' }}">
-                    
-                    <label>Описание</label>
-                    <textarea name="description">{{ publication.description if publication else '' }}</textarea>
-
-                    <div style="display: flex; gap: 10px; margin-top: 15px;">
-                        <button type="submit" class="btn-black-rounded" style="flex: 1;">Сохранить</button>
+                    <div style="background: #ffffff; padding: 15px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                        <label style="font-weight: bold; display: block; margin-bottom: 10px; color: #005df9;">Изображение текста</label>
+                        <div style="border: 1px dashed #ccc; padding: 20px; text-align: center; border-radius: 8px; margin-bottom: 15px; color: #888; background: #f9f9f9;">
+                            <span style="font-size: 24px; display: block; margin-bottom: 5px;">🖼️</span>
+                            Изображение не выбрано
+                        </div>
+                        <input type="file" name="image_file" accept="image/*" style="width: 100%;">
                     </div>
-                </div>
-            </form>
 
-            <!-- КНОПКА ОПУБЛИКОВАТЬ (Отдельная форма) -->
-            {% if publication %}
-            <form action="/publications/{{ publication.id }}/publish" method="POST" style="margin-top: 10px;">
-                <button type="submit" class="btn-black-rounded" style="width: 100%; background: #005df9;">Опубликовать</button>
-            </form>
+                    <div style="background: #ffffff; padding: 15px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                        <label style="font-weight: bold; display: block; margin-bottom: 10px; color: #005df9;">Видео текста</label>
+                        <div style="border: 1px dashed #ccc; padding: 20px; text-align: center; border-radius: 8px; margin-bottom: 15px; color: #888; background: #f9f9f9;">
+                            <span style="font-size: 24px; display: block; margin-bottom: 5px;">🎥</span>
+                            Видео не выбрано
+                        </div>
+                        <input type="file" name="video_file" accept="video/*" style="width: 100%;">
+                    </div>
+
+                    <!-- Скрытые поля -->
+                    <input type="hidden" name="title" value="Новый текст">
+                    <input type="hidden" name="genre" value="">
+                    <input type="hidden" name="avg_length" value="0">
+                    <input type="hidden" name="unique_words_share" value="">
+                    <input type="hidden" name="description" value="">
+
+                    <button type="submit" class="btn-black-rounded" style="width: 100%; padding: 14px; font-size: 16px; margin-top: 5px;">Далее</button>
+                    <p style="text-align: center; font-size: 12px; color: #888; margin-top: 5px;">Карточка сохранится в статусе «черновик», параметры заполните на следующем шаге</p>
+                </form>
+
+            {% else %}
+                <!-- ШАГ 2: ЗАПОЛНЕНИЕ ПАРАМЕТРОВ -->
+                <form action="/publications/draft" method="POST" enctype="multipart/form-data" style="display: flex; flex-direction: column; gap: 15px;">
+                    
+                    <div style="background: #ffffff; padding: 15px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                        <label style="font-weight: bold; margin-bottom: 10px; display: block; color: #005df9;">Изображение текста</label>
+                        {% if publication.image_url %}
+                            <img src="{{ publication.image_url }}" alt="Обложка" style="width: 100%; border-radius: 8px; border: 1px solid #eaeaea;">
+                        {% else %}
+                            <div style="border: 1px dashed #ccc; padding: 15px; text-align: center; border-radius: 8px; color: #888; background: #f9f9f9;">Изображение загружено</div>
+                        {% endif %}
+                        
+                        <label style="font-weight: bold; margin-bottom: 10px; margin-top: 20px; display: block; color: #005df9;">Видео текста</label>
+                        {% if publication.video_url %}
+                            <video src="{{ publication.video_url }}" style="width: 100%; border-radius: 8px; border: 1px solid #eaeaea;" controls></video>
+                        {% else %}
+                            <div style="border: 1px dashed #ccc; padding: 15px; text-align: center; border-radius: 8px; color: #888; background: #f9f9f9;">Видео загружено</div>
+                        {% endif %}
+                    </div>
+
+                    <div style="background: #ffffff; padding: 15px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); display: flex; flex-direction: column; gap: 10px;">
+                        <label style="font-weight: bold; color: #005df9; margin-bottom: -5px;">Название текста</label>
+                        <input type="text" name="title" value="{{ publication.title if publication.title != 'Новый текст' else '' }}" style="padding: 10px; border: 1px solid #ccc; border-radius: 8px; width: 100%; box-sizing: border-box;" required>
+                        
+                        <label style="font-weight: bold; color: #005df9; margin-bottom: -5px; margin-top: 5px;">Краткое описание</label>
+                        <textarea name="description" rows="3" style="padding: 10px; border: 1px solid #ccc; border-radius: 8px; width: 100%; box-sizing: border-box; resize: none;">{{ publication.description }}</textarea>
+
+                        <label style="font-weight: bold; color: #005df9; margin-bottom: -5px; margin-top: 5px;">Жанр</label>
+                        <input type="text" name="genre" value="{{ publication.genre }}" style="padding: 10px; border: 1px solid #ccc; border-radius: 8px; width: 100%; box-sizing: border-box;">
+                        
+                        <label style="font-weight: bold; color: #005df9; margin-bottom: -5px; margin-top: 5px;">Средняя длина</label>
+                        <input type="number" name="avg_length" value="{{ publication.avg_length or 0 }}" style="padding: 10px; border: 1px solid #ccc; border-radius: 8px; width: 100%; box-sizing: border-box;">
+                        
+                        <label style="font-weight: bold; color: #005df9; margin-bottom: -5px; margin-top: 5px;">Доля уникальных слов</label>
+                        <input type="text" name="unique_words_share" value="{{ publication.unique_words_share }}" style="padding: 10px; border: 1px solid #ccc; border-radius: 8px; width: 100%; box-sizing: border-box;">
+                    </div>
+
+                    <button type="submit" class="btn-black-rounded" style="width: 100%; padding: 14px; font-size: 16px; margin-top: 5px;">Сохранить параметры</button>
+                </form>
+
+                <form action="/publications/{{ publication.id }}/publish" method="POST" style="margin-top: 15px;">
+                    <button type="submit" class="btn-black-rounded" style="width: 100%; padding: 14px; font-size: 16px;">Опубликовать текст</button>
+                </form>
             {% endif %}
         </div>
 
+        <!-- НИЖНЕЕ МЕНЮ -->
         <nav class="bottom-tab-bar">
-            <a href="/publications">Плитка</a>
-            <a href="/publications/feed">Лента</a>
-            <a href="/publications/draft" class="active">Добавление</a>
+            <a href="/publications/feed" {% if request.url.path == '/publications/feed' %}class="active"{% endif %}>ЛЕНТА</a>
+            <a href="/publications/draft" {% if request.url.path == '/publications/draft' %}class="active"{% endif %}>ДОБАВЛЕНИЕ</a>
+            <a href="/publications" {% if request.url.path == '/publications' %}class="active"{% endif %}>ПЛИТКА</a>
         </nav>
+
     </div>
 </body>
 </html>

@@ -1,5 +1,5 @@
 # data/models.py
-from sqlalchemy import Column, Integer, String, Text, ForeignKey, DateTime
+from sqlalchemy import Column, Integer, String, Text, ForeignKey, DateTime, Float
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from data.database import Base
@@ -49,10 +49,38 @@ class Like(Base):
     __tablename__ = "likes"
     
     id = Column(Integer, primary_key=True, index=True)
-    # По ТЗ: первичный и два внешних ключа, без каскадного удаления
     user_id = Column(Integer, ForeignKey("users.id"))
     publication_id = Column(Integer, ForeignKey("publications.id"))
     
-    # Связи
     user = relationship("User", back_populates="likes")
     publication = relationship("Publication", back_populates="likes")
+
+class Request(Base):
+    __tablename__ = "requests"
+
+    id = Column(Integer, primary_key=True, index=True)
+    status = Column(String, default="черновик") # черновик, сформирована, завершена
+    
+    created_at = Column(DateTime, default=datetime.utcnow)
+    formed_at = Column(DateTime, nullable=True)
+    completed_at = Column(DateTime, nullable=True)
+    
+    creator_id = Column(Integer, ForeignKey("users.id"))
+    moderator_id = Column(Integer, ForeignKey("users.id"), nullable=True)
+    
+    creator = relationship("User", foreign_keys=[creator_id])
+    moderator = relationship("User", foreign_keys=[moderator_id])
+    items = relationship("RequestItem", back_populates="request", cascade="all, delete-orphan")
+
+class RequestItem(Base):
+    __tablename__ = "request_items"
+
+    id = Column(Integer, primary_key=True, index=True)
+    request_id = Column(Integer, ForeignKey("requests.id"))
+    publication_id = Column(Integer, ForeignKey("publications.id"))
+    
+    # Поле для сохранения результатов расчетов по предметной области (индекс читабельности)
+    readability_index = Column(Float, nullable=True)
+
+    request = relationship("Request", back_populates="items")
+    publication = relationship("Publication")

@@ -14,14 +14,37 @@
         </div>
         
         <div class="content">
-            <form method="GET" action="/publications" class="filter-form">
-                <input type="text" name="genre" value="{{ current_genre }}" placeholder="Жанр (например, Научный)">
-                <button type="submit" class="btn-search">🔍</button>
+            
+            <!-- СТИЛЬНЫЙ ВИДЖЕТ ФИЛЬТРА (В твоем черном стиле) -->
+            <form method="GET" action="/publications" style="background: #fafafa; padding: 15px; border-radius: 12px; border: 1px solid #eaeaea; max-width: 320px; margin: 0 auto 25px auto;">
+                
+                <div style="text-align: center; font-weight: bold; font-size: 14px; margin-bottom: 10px;">
+                    Макс. длина: <output id="sliderVal">{{ current_length or 200000 }}</output>
+                </div>
+                
+                <!-- Подписи границ -->
+                <div style="display: flex; justify-content: space-between; font-size: 11px; color: #888; font-weight: bold; margin-bottom: 5px; padding: 0 2px;">
+                    <span>100</span>
+                    <span>200 000</span>
+                </div>
+                
+                <!-- Ползунок -->
+                <input type="range" name="max_length" min="100" max="200000" step="100" value="{{ current_length or 200000 }}" 
+                       oninput="document.getElementById('sliderVal').value = this.value; document.getElementById('inputVal').value = this.value;" 
+                       style="width: 100%; margin-bottom: 15px; accent-color: #000; cursor: pointer;">
+                
+                <!-- Поле ввода и кнопка -->
+                <div style="display: flex; gap: 10px; align-items: stretch; height: 42px;">
+                    <input type="number" id="inputVal" value="{{ current_length or 200000 }}" 
+                           oninput="this.form.max_length.value = this.value; document.getElementById('sliderVal').value = this.value;" 
+                           style="flex: 1; border: 1px solid #ccc; border-radius: 8px; text-align: center; font-weight: bold; outline: none; font-size: 14px; background: #f9f9f9; box-sizing: border-box; margin: 0; padding: 0;">
+                    <button type="submit" class="btn-black-rounded" style="padding: 0 20px; margin: 0; box-sizing: border-box; display: flex; align-items: center; justify-content: center; font-size: 14px; border: none; cursor: pointer;">🔍 Поиск</button>
+                </div>
             </form>
 
             <div class="two-columns">
                 {% for pub in publications %}
-                <a href="/publications/{{ pub.id }}" class="card">
+                <a href="/publications/{{ pub.id }}" class="card" style="text-decoration: none; color: inherit;">
                     <img src="{{ pub.image_url }}" class="image" alt="{{ pub.title }}">
                     <div class="info">
                         <p class="title">{{ pub.title }}</p>
@@ -29,9 +52,9 @@
                             <span class="genre">{{ pub.genre }}</span>
                             <span class="likes">❤️ {{ pub.likes_count }}</span>
                         </div>
-                        <!-- ДОБАВЛЕНО: Кнопка удаления (POST запрос на удаление) -->
+                        <!-- Кнопка удаления (POST запрос на удаление) -->
                         <form action="/publications/{{ pub.id }}/delete" method="POST" style="margin-top: 10px;">
-                            <button type="submit" style="width: 100%; padding: 6px; background: #ffe6e6; color: #d90429; border: 1px solid #ffb3b3; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: bold;">Удалить услугу</button>
+                            <button type="submit" class="btn-black-rounded" style="width: 100%;">Удалить услугу</button>
                         </form>
                     </div>
                 </a>
@@ -43,11 +66,11 @@
             {% endif %}
         </div>
         
-        <!-- Нижнее меню -->
+        <!-- НИЖНЕЕ МЕНЮ: Лента, Добавление, Плитка -->
         <nav class="bottom-tab-bar">
-            <a href="/publications" {% if request.url.path == '/publications' %}class="active"{% endif %}>Плитка</a>
-            <a href="/publications/feed" {% if request.url.path == '/publications/feed' %}class="active"{% endif %} >Лента</a>
-            <a href="/publications/draft" {% if request.url.path == '/publications/draft' %}class="active"{% endif %}>Добавление</a>
+            <a href="/publications/feed" {% if request.url.path == '/publications/feed' %}class="active"{% endif %}>ЛЕНТА</a>
+            <a href="/publications/draft" {% if request.url.path == '/publications/draft' %}class="active"{% endif %}>ДОБАВЛЕНИЕ</a>
+            <a href="/publications" {% if request.url.path == '/publications' %}class="active"{% endif %}>ПЛИТКА</a>
         </nav>
     </div>
 </body>
